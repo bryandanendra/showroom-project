@@ -3,8 +3,23 @@
 @section('title', $car->full_name . ' - SMM AUTO GALLERY')
 
 @section('content')
+<style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    /* Hide elements with x-cloak until Alpine.js is ready */
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
 <div class="bg-white py-8 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb -->
         <nav class="text-sm mb-6">
             <a href="{{ route('home') }}" class="text-gray-500 hover:text-gray-700">Beranda</a>
@@ -15,26 +30,119 @@
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <!-- Image Gallery -->
-            <div>
-                <div class="bg-gray-200 rounded-lg overflow-hidden mb-4" style="height: 400px;">
-                    @if($car->main_image)
-                        <img src="{{ asset('storage/' . $car->main_image) }}" alt="{{ $car->full_name }}" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center">
-                            <svg class="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
+            <!-- Image Gallery with Carousel -->
+            @php
+                $allImages = [];
+                if($car->main_image) {
+                    $allImages[] = [
+                        'path' => $car->main_image,
+                        'type' => 'main'
+                    ];
+                }
+                foreach($car->images as $img) {
+                    $allImages[] = [
+                        'path' => $img->image_path,
+                        'type' => 'additional'
+                    ];
+                }
+            @endphp
+
+            <!-- Image Gallery Carousel -->
+            <div class="w-full mx-auto" style="max-width: 600px;" 
+                 x-data="{ 
+                     currentIndex: 0,
+                     images: {{ json_encode(array_map(function($img) { return $img['path']; }, $allImages)) }},
+                     totalImages: {{ count($allImages) }},
+                     setImage(index) {
+                         this.currentIndex = index;
+                     },
+                     nextImage() {
+                         this.currentIndex = (this.currentIndex + 1) % this.totalImages;
+                     },
+                     prevImage() {
+                         this.currentIndex = (this.currentIndex - 1 + this.totalImages) % this.totalImages;
+                     }
+                 }"
+                 x-cloak>
+                @if(count($allImages) > 0)
+                    <!-- Main Image Display -->
+                    <div class="relative w-full bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 4/3;">
+                        <!-- Main Image -->
+                        <template x-for="(image, index) in images" :key="index">
+                            <div x-show="currentIndex === index" 
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="transition ease-in duration-300"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0"
+                                 class="absolute inset-0">
+                                <img :src="'{{ asset('storage') }}/' + image" 
+                                     alt="{{ $car->full_name }}" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                        </template>
+
+                        <!-- Navigation Arrows -->
+                        <template x-if="totalImages > 1">
+                            <div>
+                                <!-- Previous Button -->
+                                <button @click="prevImage()" 
+                                        class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                
+                                <!-- Next Button -->
+                                <button @click="nextImage()" 
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+
+                        <!-- Image Counter -->
+                        <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+                            <span x-text="currentIndex + 1"></span> / <span x-text="totalImages"></span>
+                        </div>
+                    </div>
+
+                    <!-- Thumbnail Navigation -->
+                    @if(count($allImages) > 1)
+                        <div class="relative">
+                            <!-- Thumbnails Container -->
+                            <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2" 
+                                 x-ref="thumbnailContainer">
+                                @foreach($allImages as $index => $image)
+                                    <button @click="setImage({{ $index }})" 
+                                            class="flex-shrink-0 relative bg-gray-900 rounded-lg overflow-hidden transition-all duration-200"
+                                            :class="currentIndex === {{ $index }} ? 'ring-4 ring-red-600 opacity-100' : 'opacity-60 hover:opacity-100'"
+                                            style="width: 100px; height: 75px;">
+                                        <img src="{{ asset('storage/' . $image['path']) }}" 
+                                             alt="{{ $car->full_name }} - Thumbnail {{ $index + 1 }}" 
+                                             class="w-full h-full object-cover">
+                                        <!-- Active Indicator Overlay -->
+                                        <div x-show="currentIndex === {{ $index }}" 
+                                             class="absolute inset-0 border-2 border-red-600 pointer-events-none"></div>
+                                    </button>
+                                @endforeach
+                            </div>
                         </div>
                     @endif
-                </div>
-                @if($car->images->count() > 0)
-                    <div class="grid grid-cols-4 gap-2">
-                        @foreach($car->images as $image)
-                            <div class="bg-gray-200 rounded overflow-hidden" style="height: 100px;">
-                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Car image" class="w-full h-full object-cover">
+                @else
+                    <!-- No Images Placeholder -->
+                    <div class="relative w-full bg-gray-100 rounded-lg" style="aspect-ratio: 4/3;">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-24 h-24 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-500 font-medium">Tidak ada gambar</p>
                             </div>
-                        @endforeach
+                        </div>
                     </div>
                 @endif
             </div>

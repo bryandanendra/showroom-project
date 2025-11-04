@@ -108,6 +108,33 @@
                         <img src="{{ asset('storage/' . $car->main_image) }}" class="w-32 h-32 object-cover rounded mb-2">
                     @endif
                     <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                    <p class="text-xs text-gray-500 mt-1">Gambar utama yang akan ditampilkan di katalog</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Tambahan</label>
+                    
+                    @if($car->images->count() > 0)
+                        <div class="grid grid-cols-4 gap-4 mb-4">
+                            @foreach($car->images as $image)
+                                <div class="relative">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-32 object-cover rounded">
+                                    <form action="{{ route('admin.cars.delete-image', $image->id) }}" method="POST" class="absolute top-1 right-1" onsubmit="return confirm('Hapus gambar ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white rounded-full p-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <input type="file" name="images[]" accept="image/*" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                    <p class="text-xs text-gray-500 mt-1">Tambah gambar baru untuk carousel (Max: 2MB per gambar)</p>
                 </div>
 
                 <div class="md:col-span-2">

@@ -6,12 +6,6 @@
 <div class="p-6">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">Kelola Test Drive</h1>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

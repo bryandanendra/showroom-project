@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Car;
+use App\Models\CarImage;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,13 +43,26 @@ class CarController extends Controller
             'condition' => 'required|in:excellent,good,fair',
             'status' => 'required|in:available,sold,reserved',
             'main_image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         if ($request->hasFile('main_image')) {
             $validated['main_image'] = $request->file('main_image')->store('cars', 'public');
         }
 
-        Car::create($validated);
+        $car = Car::create($validated);
+
+        // Handle multiple images upload
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('cars', 'public');
+                CarImage::create([
+                    'car_id' => $car->id,
+                    'image_path' => $path,
+                    'order' => $index + 1,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.cars.index')
             ->with('success', 'Mobil berhasil ditambahkan!');
@@ -80,6 +94,7 @@ class CarController extends Controller
             'condition' => 'required|in:excellent,good,fair',
             'status' => 'required|in:available,sold,reserved',
             'main_image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         if ($request->hasFile('main_image')) {
@@ -91,6 +106,19 @@ class CarController extends Controller
 
         $car->update($validated);
 
+        // Handle multiple images upload
+        if ($request->hasFile('images')) {
+            $currentMaxOrder = $car->images()->max('order') ?? 0;
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('cars', 'public');
+                CarImage::create([
+                    'car_id' => $car->id,
+                    'image_path' => $path,
+                    'order' => $currentMaxOrder + $index + 1,
+                ]);
+            }
+        }
+
         return redirect()->route('admin.cars.index')
             ->with('success', 'Mobil berhasil diupdate!');
     }
@@ -100,10 +128,24 @@ class CarController extends Controller
         if ($car->main_image) {
             Storage::disk('public')->delete($car->main_image);
         }
+
+        // Delete all car images
+        foreach ($car->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+            $image->delete();
+        }
         
         $car->delete();
 
         return redirect()->route('admin.cars.index')
             ->with('success', 'Mobil berhasil dihapus!');
+    }
+
+    public function deleteImage(CarImage $image)
+    {
+        Storage::disk('public')->delete($image->image_path);
+        $image->delete();
+
+        return back()->with('success', 'Gambar berhasil dihapus!');
     }
 }

@@ -6,16 +6,11 @@
 <div class="p-6">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">Kelola Pesanan</h1>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No. Transaksi</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mobil</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga</th>
@@ -27,6 +22,9 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($orders as $order)
                     <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-mono font-semibold text-gray-900">{{ $order->order_number }}</div>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $order->user->name }}</div>
                             <div class="text-sm text-gray-500">{{ $order->user->email }}</div>

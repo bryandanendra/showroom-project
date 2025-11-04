@@ -153,6 +153,7 @@
                         @foreach($recentOrders as $order)
                             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                 <div class="flex-1">
+                                    <p class="text-xs font-mono text-gray-400 mb-1">{{ $order->order_number }}</p>
                                     <p class="font-semibold text-gray-900">{{ $order->user->name ?? 'N/A' }}</p>
                                     <p class="text-sm text-gray-600">{{ $order->car->brand ?? 'N/A' }} {{ $order->car->model ?? '' }}</p>
                                     <p class="text-xs text-gray-500">{{ $order->car->formatted_price ?? 'N/A' }}</p>

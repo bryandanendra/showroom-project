@@ -1,10 +1,250 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Pesanan - Admin')
+@section('title', 'Nota-' . $order->order_number . '-' . $order->user->name)
 
 @section('content')
+<!-- Print Styles v2.0 -->
+<style>
+    @media print {
+        /* Hide admin layout completely */
+        aside, nav, header, button, .print\:hidden {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        /* Force white background and remove scrollbar */
+        body, html {
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* Remove all scrollbars */
+        * {
+            overflow: visible !important;
+            max-width: 100% !important;
+        }
+        
+        /* Print color adjustment */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+        
+        /* Page setup */
+        @page {
+            margin: 1.5cm;
+            size: A4;
+        }
+        
+        /* Hide URL and page numbers in print */
+        @page {
+            margin-top: 1.5cm;
+            margin-bottom: 1.5cm;
+        }
+        
+        /* Remove header and footer from print */
+        body::before,
+        body::after {
+            display: none !important;
+        }
+        
+        /* Hide browser default header/footer */
+        html {
+            margin: 0 !important;
+        }
+        
+        /* Show print header */
+        .print-header {
+            display: block !important;
+            border-bottom: 3px solid #dc2626;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .print-header-logo {
+            display: flex !important;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .print-company-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc2626;
+        }
+        
+        .print-tagline {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .print-header-info {
+            text-align: right;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .print-title {
+            display: block !important;
+            text-align: center;
+            background: #dc2626;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+            letter-spacing: 2px;
+        }
+        
+        .print-order-info {
+            display: flex !important;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f3f4f6;
+            border-left: 4px solid #dc2626;
+        }
+        
+        .print-section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        
+        .print-section-title {
+            background: #f9fafb;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 14px;
+            border-left: 4px solid #dc2626;
+            margin-bottom: 10px;
+        }
+        
+        .print-signature {
+            display: flex !important;
+            justify-content: space-between;
+            margin-top: 50px;
+            padding: 0 40px;
+        }
+        
+        .print-signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        
+        .print-signature-line {
+            border-top: 1px solid #000;
+            margin-top: 60px;
+            padding-top: 5px;
+        }
+        
+        .print-footer {
+            display: block !important;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+            font-size: 10px;
+            color: #6b7280;
+        }
+        
+        /* Adjust main content */
+        .p-6 {
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        .grid {
+            display: block !important;
+            width: 100% !important;
+        }
+        
+        .shadow {
+            box-shadow: none !important;
+        }
+        
+        /* Fix container width */
+        .lg\:grid-cols-2 {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .rounded-lg {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Ensure content fits */
+        .bg-white {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: hidden !important;
+        }
+    }
+    
+    .print-header, .print-title, .print-order-info, .print-signature, .print-footer {
+        display: none;
+    }
+</style>
 <div class="p-6">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Detail Pesanan #{{ $order->id }}</h1>
+    <!-- Print Header - Kop Surat -->
+    <div class="print-header" style="display: none;">
+        <div class="print-header-logo" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <div>
+                <div class="print-company-name" style="font-size: 24px; font-weight: bold; color: #dc2626; margin-bottom: 5px;">SMM AUTO GALLERY</div>
+                <div class="print-tagline" style="font-size: 12px; color: #666; font-style: italic;">Premium Used Cars - Your Trusted Partner</div>
+            </div>
+            <div class="print-header-info" style="text-align: right; font-size: 11px; line-height: 1.4;">
+                <div><strong>Alamat:</strong> Jl. Showroom No. 123, Jakarta Selatan 12345</div>
+                <div><strong>Telp:</strong> (021) 1234-5678 | <strong>HP:</strong> 0812-3456-7890</div>
+                <div><strong>Email:</strong> info@smmautogallery.com | <strong>Web:</strong> www.smmautogallery.com</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Title -->
+    <div class="print-title" style="display: none;">NOTA PEMESANAN KENDARAAN</div>
+
+    <!-- Print Order Info -->
+    <div class="print-order-info" style="display: none;">
+        <div>
+            <div><strong>No. Transaksi:</strong> {{ $order->order_number }}</div>
+            <div><strong>Tanggal:</strong> {{ $order->created_at->format('d F Y') }}</div>
+        </div>
+        <div style="text-align: right;">
+            <div><strong>Status:</strong> 
+                @if($order->status === 'completed')
+                    <span style="color: #16a34a;">✓ SELESAI</span>
+                @elseif($order->status === 'processing')
+                    <span style="color: #2563eb;">⟳ DIPROSES</span>
+                @elseif($order->status === 'pending')
+                    <span style="color: #ca8a04;">⏱ PENDING</span>
+                @else
+                    <span style="color: #dc2626;">✗ DITOLAK</span>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-start mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Detail Pesanan</h1>
+            <p class="text-gray-600">Order #{{ $order->order_number }}</p>
+        </div>
+        <button onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 print:hidden">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            Cetak Nota
+        </button>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-lg shadow p-6">
@@ -61,30 +301,87 @@
             </dl>
         </div>
 
+        @if($order->credit_approval_path)
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-xl font-bold mb-4">Dokumen</h2>
             <div class="space-y-3">
                 <div>
-                    <p class="text-sm text-gray-500 mb-2">KTP</p>
-                    @if($order->id_card_path)
-                        <a href="{{ asset('storage/' . $order->id_card_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900 underline">📄 Lihat KTP</a>
-                    @else
-                        <p class="text-sm text-gray-400">Tidak ada</p>
-                    @endif
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 mb-2">SIM</p>
-                    @if($order->driver_license_path)
-                        <a href="{{ asset('storage/' . $order->driver_license_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900 underline">📄 Lihat SIM</a>
-                    @else
-                        <p class="text-sm text-gray-400">Tidak ada</p>
-                    @endif
-                </div>
-                @if($order->credit_approval_path)
-                <div>
                     <p class="text-sm text-gray-500 mb-2">Bukti Approval Kredit</p>
                     <a href="{{ asset('storage/' . $order->credit_approval_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900 underline">📄 Lihat Bukti Approval</a>
                 </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Timeline Pesanan -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-4">Timeline Pesanan</h2>
+            <div class="space-y-4">
+                <!-- Pesanan Dibuat -->
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-semibold text-gray-900">Pesanan Dibuat</p>
+                        <p class="text-sm text-gray-600">{{ $order->created_at->format('d M Y, H:i') }} WIB</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ $order->created_at->diffForHumans() }}</p>
+                    </div>
+                </div>
+
+                @if($order->approved_at)
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <p class="text-sm font-semibold text-gray-900">Pesanan Disetujui</p>
+                            <p class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($order->approved_at)->format('d M Y, H:i') }} WIB</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($order->approved_at)->diffForHumans() }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                @if($order->completed_at)
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <p class="text-sm font-semibold text-gray-900">Pesanan Selesai</p>
+                            <p class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($order->completed_at)->format('d M Y, H:i') }} WIB</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($order->completed_at)->diffForHumans() }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                @if($order->status === 'rejected')
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <p class="text-sm font-semibold text-gray-900">Pesanan Ditolak</p>
+                            <p class="text-sm text-gray-600">{{ $order->updated_at->format('d M Y, H:i') }} WIB</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $order->updated_at->diffForHumans() }}</p>
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>
@@ -144,6 +441,34 @@
                 </button>
             </form>
         @endif
+    </div>
+
+    <!-- Print Signature -->
+    <div class="print-signature" style="display: none;">
+        <div class="print-signature-box" style="text-align: center; width: 200px;">
+            <div style="font-weight: bold; margin-bottom: 5px;">Pihak Pertama</div>
+            <div style="font-size: 11px; color: #6b7280;">(Pembeli)</div>
+            <div class="print-signature-line" style="border-top: 1px solid #000; margin-top: 60px; padding-top: 5px;">
+                {{ $order->user->name }}
+            </div>
+        </div>
+        <div class="print-signature-box" style="text-align: center; width: 200px;">
+            <div style="font-weight: bold; margin-bottom: 5px;">Pihak Kedua</div>
+            <div style="font-size: 11px; color: #6b7280;">(SMM AUTO GALLERY)</div>
+            <div class="print-signature-line" style="border-top: 1px solid #000; margin-top: 60px; padding-top: 5px;">
+                Authorized Signature
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Footer -->
+    <div class="print-footer" style="display: none;">
+        <div style="margin-bottom: 10px; font-weight: 600; color: #374151;">Terima kasih atas kepercayaan Anda</div>
+        <div style="margin-bottom: 5px;">Dokumen ini adalah bukti sah transaksi pemesanan kendaraan</div>
+        <div>SMM AUTO GALLERY - Premium Used Cars | Est. 2020</div>
+        <div style="margin-top: 10px; font-size: 9px;">
+            Dicetak pada: {{ now()->format('d F Y, H:i') }} WIB
+        </div>
     </div>
 </div>
 @endsection

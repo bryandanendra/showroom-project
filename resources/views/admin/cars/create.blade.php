@@ -105,6 +105,13 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
                     <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    <p class="text-xs text-gray-500 mt-1">Gambar utama yang akan ditampilkan di katalog</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Tambahan (Multiple)</label>
+                    <input type="file" name="images[]" accept="image/*" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    <p class="text-xs text-gray-500 mt-1">Pilih beberapa gambar sekaligus untuk carousel di detail mobil (Max: 2MB per gambar)</p>
                 </div>
 
                 <div class="md:col-span-2">

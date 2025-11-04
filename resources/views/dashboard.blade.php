@@ -118,6 +118,7 @@
                                     <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
                                         <div class="flex items-start justify-between">
                                             <div class="flex-1">
+                                                <div class="text-xs font-mono text-gray-500 mb-1">{{ $order->order_number }}</div>
                                                 <h4 class="font-bold text-gray-900">{{ $order->car->full_name }}</h4>
                                                 <p class="text-lg text-red-600 font-bold mt-1">{{ $order->formatted_total_price }}</p>
                                                 <p class="text-sm text-gray-600 mt-1">

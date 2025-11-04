@@ -14,21 +14,29 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Contact Route
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
 // Catalog Routes
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{car}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // Auth Routes (Laravel Breeze)
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Profile Routes (from Breeze) - Available for all authenticated users
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// User-only Routes (Customer features - Admin cannot access)
+Route::middleware(['auth', 'verified', 'user'])->group(function () {
     // User Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-
-    // Profile Routes (from Breeze)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Test Drive Routes
     Route::get('/test-drive', [TestDriveController::class, 'index'])->name('test-drive.index');
@@ -48,6 +56,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     
     // Car Management
     Route::resource('cars', AdminCarController::class);
+    Route::delete('/cars/images/{image}', [AdminCarController::class, 'deleteImage'])->name('cars.delete-image');
     
     // Test Drive Management
     Route::get('/test-drives', [AdminTestDriveController::class, 'index'])->name('test-drives.index');

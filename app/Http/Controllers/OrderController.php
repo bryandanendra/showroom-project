@@ -34,8 +34,6 @@ class OrderController extends Controller
             'car_id' => 'required|exists:cars,id',
             'payment_method' => 'required|in:cash,transfer,credit',
             'down_payment' => 'nullable|numeric|min:0',
-            'id_card_path' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'driver_license_path' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'credit_approval_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'customer_notes' => 'nullable|string',
         ]);
@@ -43,12 +41,6 @@ class OrderController extends Controller
         $car = Car::findOrFail($validated['car_id']);
 
         // Upload files
-        if ($request->hasFile('id_card_path')) {
-            $validated['id_card_path'] = $request->file('id_card_path')->store('documents/id-cards', 'public');
-        }
-        if ($request->hasFile('driver_license_path')) {
-            $validated['driver_license_path'] = $request->file('driver_license_path')->store('documents/licenses', 'public');
-        }
         if ($request->hasFile('credit_approval_path')) {
             $validated['credit_approval_path'] = $request->file('credit_approval_path')->store('documents/credit-approvals', 'public');
         }
