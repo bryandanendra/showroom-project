@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CarController as AdminCarController;
 use App\Http\Controllers\Admin\TestDriveController as AdminTestDriveController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\StorageController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -69,6 +70,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::patch('/orders/{order}/approve', [AdminOrderController::class, 'approve'])->name('orders.approve');
     Route::patch('/orders/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
     Route::patch('/orders/{order}/complete', [AdminOrderController::class, 'complete'])->name('orders.complete');
+    
+    // Storage Routes
+    Route::get('/storage/approval/{order}', [StorageController::class, 'downloadApproval'])->name('storage.approval');
+    Route::get('/storage/approval/{order}/view', [StorageController::class, 'viewApproval'])->name('storage.approval.view');
 });
 
 require __DIR__.'/auth.php';
