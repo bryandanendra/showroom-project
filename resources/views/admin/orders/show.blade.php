@@ -193,7 +193,7 @@
         display: none;
     }
 </style>
-<div class="p-6">
+<div class="p-3 md:p-6">
     <!-- Print Header - Kop Surat -->
     <div class="print-header" style="display: none;">
         <div class="print-header-logo" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -284,11 +284,11 @@
                     <dt class="text-sm text-gray-500">Metode Pembayaran</dt>
                     <dd class="text-sm font-medium text-gray-900">
                         @if($order->payment_method === 'cash')
-                            💵 Cash (Tunai)
+                            Cash (Tunai)
                         @elseif($order->payment_method === 'transfer')
-                            🏦 Transfer Bank
+                            Transfer Bank
                         @else
-                            💳 Kredit/Leasing
+                            Kredit/Leasing
                         @endif
                     </dd>
                 </div>
@@ -304,38 +304,45 @@
         @if($order->credit_approval_path)
         <div class="bg-white rounded-lg shadow p-4 md:p-6">
             <h2 class="text-xl font-bold mb-4">Dokumen</h2>
-            <div class="space-y-3">
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 md:p-6 bg-gray-50 hover:bg-gray-100 transition">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div class="flex items-start md:items-center gap-3 md:gap-4 min-w-0 flex-1">
-                            <div class="flex-shrink-0">
-                                <svg class="w-10 h-10 md:w-12 md:h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="border border-gray-200 rounded-lg p-4 bg-white">
+                <div class="flex items-center justify-between gap-3">
+                    <!-- Left: Icon + Info -->
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <!-- Icon -->
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                             </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-sm font-semibold text-gray-900">Bukti Approval Kredit</p>
-                                <!-- <p class="text-xs text-gray-500 mt-1 break-all">{{ basename($order->credit_approval_path) }}</p> -->
-                                <p class="text-xs text-gray-400 mt-1">
-                                    Diupload: {{ $order->created_at->format('d M Y, H:i') }}
-                                </p>
-                            </div>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                            <a href="{{ route('admin.storage.approval.view', $order) }}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition shadow-sm">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                                View
-                            </a>
-                            <a href="{{ route('admin.storage.approval', $order) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition shadow-sm">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                                </svg>
-                                Download
-                            </a>
+                        
+                        <!-- Document Info -->
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900">Bukti Approval Kredit</p>
+                            <p class="text-xs text-gray-500 mt-0.5">
+                                Diupload: {{ $order->created_at->format('d M Y, H:i') }}
+                            </p>
                         </div>
+                    </div>
+                    
+                    <!-- Right: Action Buttons -->
+                    <div class="flex gap-2 flex-shrink-0">
+                        <a href="{{ route('admin.storage.approval.view', $order) }}" target="_blank" 
+                           class="inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg transition shadow-sm"
+                           title="Lihat Dokumen">
+                            <svg class="w-5 h-5" fill="none" stroke="black" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </a>
+                        <a href="{{ route('admin.storage.approval', $order) }}" 
+                           class="inline-flex items-center justify-center w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow-sm"
+                           title="Download Dokumen">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -426,10 +433,10 @@
                         @elseif($order->status === 'completed') bg-green-100 text-green-800
                         @else bg-red-100 text-red-800
                         @endif">
-                        @if($order->status === 'pending') ⏰ Menunggu
-                        @elseif($order->status === 'processing') 🔄 Sedang Diproses
-                        @elseif($order->status === 'completed') ✅ Selesai
-                        @else ❌ Ditolak
+                        @if($order->status === 'pending') Menunggu
+                        @elseif($order->status === 'processing') Sedang Diproses
+                        @elseif($order->status === 'completed') Selesai
+                        @else Ditolak
                         @endif
                     </span>
                 </div>

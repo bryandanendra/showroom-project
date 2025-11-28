@@ -43,7 +43,15 @@
                     <!-- Price Filter -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Harga Maksimal</label>
-                        <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="500000000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                        <input type="text" 
+                               name="max_price_display" 
+                               id="max_price_catalog" 
+                               value="{{ request('max_price') ? number_format(request('max_price'), 0, ',', ',') : '' }}" 
+                               placeholder="Rp 500,000,000" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                               data-rupiah-input
+                               autocomplete="off">
+                        <input type="hidden" name="max_price" id="max_price_value_catalog" value="{{ request('max_price') }}">
                     </div>
 
                     <!-- Transmission Filter -->
@@ -86,7 +94,7 @@
                             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
                         <label class="text-sm text-gray-600">Urutkan:</label>
-                        <select name="sort" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 text-sm">
+                        <select name="sort" data-auto-submit class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 text-sm">
                             <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Harga Terendah</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Harga Tertinggi</option>

@@ -3,7 +3,7 @@
 @section('title', 'Kelola Mobil - Admin')
 
 @section('content')
-<div class="p-6">
+<div class="p-3 md:p-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-900">Kelola Mobil</h1>
         <a href="{{ route('admin.cars.create') }}" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition">
@@ -12,7 +12,9 @@
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
+        <!-- Table Wrapper - Scrollable on Mobile -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mobil</th>
@@ -62,7 +64,8 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
     <div class="mt-6">

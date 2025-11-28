@@ -13,15 +13,40 @@
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }
-    /* Hide elements with x-cloak until Alpine.js is ready */
-    [x-cloak] {
-        display: none !important;
+    
+    /* Carousel styles */
+    .carousel-image {
+        display: none;
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    
+    .carousel-image.active {
+        display: block;
+        opacity: 1;
+    }
+    
+    .thumbnail-button.active {
+        opacity: 1;
+        box-shadow: 0 0 0 4px #dc2626;
+    }
+    
+    .thumbnail-button {
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+    
+    .thumbnail-button:hover {
+        opacity: 1;
     }
 </style>
+
 <div class="bg-white py-8 min-h-screen">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb -->
-        <nav class="text-sm mb-6">
+        <nav class="breadcrumb">
             <a href="{{ route('home') }}" class="text-gray-500 hover:text-gray-700">Beranda</a>
             <span class="mx-2 text-gray-400">/</span>
             <a href="{{ route('catalog.index') }}" class="text-gray-500 hover:text-gray-700">Katalog</a>
@@ -48,65 +73,43 @@
             @endphp
 
             <!-- Image Gallery Carousel -->
-            <div class="w-full mx-auto" style="max-width: 600px;" 
-                 x-data="{ 
-                     currentIndex: 0,
-                     images: {{ json_encode(array_map(function($img) { return $img['path']; }, $allImages)) }},
-                     totalImages: {{ count($allImages) }},
-                     setImage(index) {
-                         this.currentIndex = index;
-                     },
-                     nextImage() {
-                         this.currentIndex = (this.currentIndex + 1) % this.totalImages;
-                     },
-                     prevImage() {
-                         this.currentIndex = (this.currentIndex - 1 + this.totalImages) % this.totalImages;
-                     }
-                 }"
-                 x-cloak>
+            <div class="w-full mx-auto" style="max-width: 600px;" id="carCarousel" data-total-images="{{ count($allImages) }}">
                 @if(count($allImages) > 0)
                     <!-- Main Image Display -->
                     <div class="relative w-full bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 4/3;">
-                        <!-- Main Image -->
-                        <template x-for="(image, index) in images" :key="index">
-                            <div x-show="currentIndex === index" 
-                                 x-transition:enter="transition ease-out duration-300"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 x-transition:leave="transition ease-in duration-300"
-                                 x-transition:leave-start="opacity-100"
-                                 x-transition:leave-end="opacity-0"
-                                 class="absolute inset-0">
-                                <img :src="'{{ asset('storage') }}/' + image" 
+                        <!-- Images -->
+                        @foreach($allImages as $index => $image)
+                            <div class="carousel-image {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}">
+                                <img src="{{ asset('storage/' . $image['path']) }}" 
                                      alt="{{ $car->full_name }}" 
                                      class="w-full h-full object-cover">
                             </div>
-                        </template>
+                        @endforeach
 
                         <!-- Navigation Arrows -->
-                        <template x-if="totalImages > 1">
-                            <div>
-                                <!-- Previous Button -->
-                                <button @click="prevImage()" 
-                                        class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                    </svg>
-                                </button>
-                                
-                                <!-- Next Button -->
-                                <button @click="nextImage()" 
-                                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </template>
+                        @if(count($allImages) > 1)
+                            <!-- Previous Button -->
+                            <button onclick="carouselPrev()" 
+                                    class="absolute left-4 top-1/2 bg-gray-900 hover:bg-gray-800 text-white p-3 rounded-full transition"
+                                    style="transform: translateY(-50%);">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            
+                            <!-- Next Button -->
+                            <button onclick="carouselNext()" 
+                                    class="absolute right-4 top-1/2 bg-gray-900 hover:bg-gray-800 text-white p-3 rounded-full transition"
+                                    style="transform: translateY(-50%);">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        @endif
 
                         <!-- Image Counter -->
-                        <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm">
-                            <span x-text="currentIndex + 1"></span> / <span x-text="totalImages"></span>
+                        <div class="absolute bottom-4 right-4 bg-gray-900 text-white px-3 py-1 rounded-full text-sm">
+                            <span id="currentImageNumber">1</span> / <span id="totalImages">{{ count($allImages) }}</span>
                         </div>
                     </div>
 
@@ -114,19 +117,15 @@
                     @if(count($allImages) > 1)
                         <div class="relative">
                             <!-- Thumbnails Container -->
-                            <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2" 
-                                 x-ref="thumbnailContainer">
+                            <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
                                 @foreach($allImages as $index => $image)
-                                    <button @click="setImage({{ $index }})" 
-                                            class="flex-shrink-0 relative bg-gray-900 rounded-lg overflow-hidden transition-all duration-200"
-                                            :class="currentIndex === {{ $index }} ? 'ring-4 ring-red-600 opacity-100' : 'opacity-60 hover:opacity-100'"
+                                    <button onclick="carouselSetImage({{ $index }})" 
+                                            class="thumbnail-button flex-shrink-0 relative bg-gray-900 rounded-lg overflow-hidden transition {{ $index === 0 ? 'active' : '' }}"
+                                            data-thumbnail="{{ $index }}"
                                             style="width: 100px; height: 75px;">
                                         <img src="{{ asset('storage/' . $image['path']) }}" 
                                              alt="{{ $car->full_name }} - Thumbnail {{ $index + 1 }}" 
                                              class="w-full h-full object-cover">
-                                        <!-- Active Indicator Overlay -->
-                                        <div x-show="currentIndex === {{ $index }}" 
-                                             class="absolute inset-0 border-2 border-red-600 pointer-events-none"></div>
                                     </button>
                                 @endforeach
                             </div>
@@ -290,3 +289,64 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Image Carousel functionality
+let currentCarouselIndex = 0;
+const totalCarouselImages = parseInt(document.getElementById('carCarousel')?.getAttribute('data-total-images') || 0);
+
+function carouselSetImage(index) {
+    if (totalCarouselImages === 0) return;
+    
+    currentCarouselIndex = index;
+    
+    // Update images
+    const images = document.querySelectorAll('.carousel-image');
+    images.forEach((img, i) => {
+        if (i === index) {
+            img.classList.add('active');
+        } else {
+            img.classList.remove('active');
+        }
+    });
+    
+    // Update thumbnails
+    const thumbnails = document.querySelectorAll('.thumbnail-button');
+    thumbnails.forEach((thumb, i) => {
+        if (i === index) {
+            thumb.classList.add('active');
+        } else {
+            thumb.classList.remove('active');
+        }
+    });
+    
+    // Update counter
+    const counter = document.getElementById('currentImageNumber');
+    if (counter) {
+        counter.textContent = index + 1;
+    }
+}
+
+function carouselNext() {
+    if (totalCarouselImages === 0) return;
+    currentCarouselIndex = (currentCarouselIndex + 1) % totalCarouselImages;
+    carouselSetImage(currentCarouselIndex);
+}
+
+function carouselPrev() {
+    if (totalCarouselImages === 0) return;
+    currentCarouselIndex = (currentCarouselIndex - 1 + totalCarouselImages) % totalCarouselImages;
+    carouselSetImage(currentCarouselIndex);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') {
+        carouselPrev();
+    } else if (e.key === 'ArrowRight') {
+        carouselNext();
+    }
+});
+</script>
+@endpush

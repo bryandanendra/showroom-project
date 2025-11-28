@@ -47,7 +47,14 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Harga Maksimal</label>
-                <input type="number" name="max_price" placeholder="Rp" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                <input type="text" 
+                       name="max_price_display" 
+                       id="max_price_home" 
+                       placeholder="Rp 500,000,000" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                       data-rupiah-input
+                       autocomplete="off">
+                <input type="hidden" name="max_price" id="max_price_value_home">
             </div>
             <div class="flex items-end">
                 <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition">

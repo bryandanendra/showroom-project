@@ -3,11 +3,13 @@
 @section('title', 'Kelola Test Drive - Admin')
 
 @section('content')
-<div class="p-6">
+<div class="p-3 md:p-6">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">Kelola Test Drive</h1>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
+        <!-- Table Wrapper - Scrollable on Mobile -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
@@ -56,7 +58,8 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
     <div class="mt-6">
