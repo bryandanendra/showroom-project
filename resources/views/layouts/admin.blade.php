@@ -8,6 +8,36 @@
     
     <!-- Pure CSS - No Node.js Dependencies -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    
+    <!-- Prevent sidebar flash on page load -->
+    <script>
+        // Apply sidebar state immediately to prevent glitch
+        (function() {
+            var sidebarCollapsed = localStorage.getItem('sidebarCollapsed');
+            if (sidebarCollapsed === 'true') {
+                document.documentElement.classList.add('sidebar-collapsed-init');
+            }
+        })();
+    </script>
+    <style>
+        /* Hide sidebar text immediately if collapsed */
+        .sidebar-collapsed-init .admin-sidebar {
+            width: 4rem;
+        }
+        .sidebar-collapsed-init .admin-sidebar .admin-sidebar-header > div:first-child {
+            display: none;
+        }
+        .sidebar-collapsed-init .admin-sidebar .admin-sidebar-link span {
+            display: none;
+        }
+        .sidebar-collapsed-init .admin-sidebar .admin-sidebar-link {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+        .sidebar-collapsed-init .admin-sidebar .admin-sidebar-header {
+            justify-content: center;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="admin-layout">
