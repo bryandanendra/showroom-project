@@ -237,6 +237,16 @@ class CarController extends Controller
             ->with('success', 'Mobil berhasil dihapus!');
     }
 
+    public function deleteMainImage(Car $car)
+    {
+        if ($car->main_image) {
+            Storage::disk('public')->delete($car->main_image);
+            $car->update(['main_image' => null]);
+        }
+
+        return back()->with('success', 'Gambar utama berhasil dihapus!');
+    }
+
     public function deleteImage(CarImage $image)
     {
         Storage::disk('public')->delete($image->image_path);

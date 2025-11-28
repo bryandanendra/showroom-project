@@ -58,6 +58,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     // Car Management
     Route::resource('cars', AdminCarController::class);
     Route::delete('/cars/images/{image}', [AdminCarController::class, 'deleteImage'])->name('cars.delete-image');
+    Route::delete('/cars/{car}/main-image', [AdminCarController::class, 'deleteMainImage'])->name('cars.delete-main-image');
     
     // Test Drive Management
     Route::get('/test-drives', [AdminTestDriveController::class, 'index'])->name('test-drives.index');

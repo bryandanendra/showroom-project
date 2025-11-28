@@ -105,7 +105,21 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
                     @if($car->main_image)
-                        <img src="{{ asset('storage/' . $car->main_image) }}" class="w-32 h-32 object-cover rounded mb-2">
+                        <div class="mb-3">
+                            <div class="relative w-48 group cursor-pointer overflow-hidden rounded-lg shadow-sm" onclick="if(confirm('Hapus gambar utama?')) deleteCarImage('{{ route('admin.cars.delete-main-image', $car) }}')">
+                                <img src="{{ asset('storage/' . $car->main_image) }}" class="w-full h-32 object-cover transition duration-300 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
+                                    <div class="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center">
+                                        <div class="bg-red-600 text-white p-2 rounded-full mb-1 shadow-lg">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-white text-xs font-semibold px-2 py-1 bg-black bg-opacity-50 rounded">Hapus</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @endif
                     <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                     <p class="text-xs text-gray-500 mt-1">Gambar utama yang akan ditampilkan di katalog</p>
@@ -115,19 +129,20 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Tambahan</label>
                     
                     @if($car->images->count() > 0)
-                        <div class="grid grid-cols-4 gap-4 mb-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                             @foreach($car->images as $image)
-                                <div class="relative">
-                                    <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-32 object-cover rounded">
-                                    <form action="{{ route('admin.cars.delete-image', $image->id) }}" method="POST" class="absolute top-1 right-1" onsubmit="return confirm('Hapus gambar ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white rounded-full p-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    </form>
+                                <div class="relative group cursor-pointer overflow-hidden rounded-lg shadow-sm" onclick="if(confirm('Hapus gambar ini?')) deleteCarImage('{{ route('admin.cars.delete-image', $image->id) }}')">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-32 object-cover transition duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
+                                        <div class="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center">
+                                            <div class="bg-red-600 text-white p-2 rounded-full mb-1 shadow-lg">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </div>
+                                            <span class="text-white text-xs font-semibold px-2 py-1 bg-black bg-opacity-50 rounded">Hapus</span>
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -159,4 +174,30 @@
         </form>
     </div>
 </div>
+</div>
+
+<script>
+    function deleteCarImage(url) {
+        // Konfirmasi sudah dilakukan di inline onclick, jadi di sini langsung submit
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+        
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        form.appendChild(methodInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
 @endsection
