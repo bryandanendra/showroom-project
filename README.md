@@ -49,6 +49,12 @@ Follow these simple steps to get the project running in minutes.
    php artisan migrate --seed
    ```
 
+   > **PENTING UNTUK TEAM:**
+   > Jika Anda mendapatkan file `database.sqlite` dari teman/tim:
+   > 1. Letakkan file tersebut di folder `database/`.
+   > 2. Pastikan namanya tepat: `database.sqlite`.
+   > 3. Jangan jalankan `php artisan migrate:fresh` karena akan menghapus data yang sudah ada.
+
 5. **Link Storage**
    ```bash
    php artisan storage:link

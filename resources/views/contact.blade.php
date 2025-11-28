@@ -49,7 +49,7 @@
                             </div>
                             <div>
                                 <h3 class="text-lg font-bold text-gray-900 mb-2">Alamat Showroom</h3>
-                                <p class="text-gray-600 leading-relaxed">Jl. Showroom No. 123<br>Jakarta Selatan 12345<br>Indonesia</p>
+                                <p class="text-gray-600 leading-relaxed">Jl. Banjaran Gang Carik 8e<br>Kota Kediri<br>Indonesia</p>
                             </div>
                         </div>
 
