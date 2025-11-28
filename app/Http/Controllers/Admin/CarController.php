@@ -8,6 +8,8 @@ use App\Models\Car;
 use App\Models\CarImage;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CarController extends Controller
 {
@@ -21,6 +23,93 @@ class CarController extends Controller
     {
         $categories = Category::all();
         return view('admin.cars.create', compact('categories'));
+    }
+
+
+    /**
+     * Crop image to 4:3 aspect ratio
+     */
+    private function cropImageTo4x3($uploadedFile)
+    {
+        try {
+            // Get file extension
+            $extension = strtolower($uploadedFile->getClientOriginalExtension());
+            
+            // Load the image based on type
+            $imagePath = $uploadedFile->getRealPath();
+            
+            if ($extension === 'png') {
+                $image = imagecreatefrompng($imagePath);
+            } elseif (in_array($extension, ['jpg', 'jpeg'])) {
+                $image = imagecreatefromjpeg($imagePath);
+            } else {
+                // Fallback: try to load from string
+                $image = imagecreatefromstring(file_get_contents($imagePath));
+            }
+            
+            if (!$image) {
+                throw new \Exception('Failed to load image');
+            }
+
+            $originalWidth = imagesx($image);
+            $originalHeight = imagesy($image);
+
+            // Calculate 4:3 dimensions
+            $targetRatio = 4 / 3;
+            $currentRatio = $originalWidth / $originalHeight;
+
+            if ($currentRatio > $targetRatio) {
+                // Image is wider - crop width
+                $newWidth = $originalHeight * $targetRatio;
+                $newHeight = $originalHeight;
+                $srcX = ($originalWidth - $newWidth) / 2;
+                $srcY = 0;
+            } else {
+                // Image is taller - crop height
+                $newWidth = $originalWidth;
+                $newHeight = $originalWidth / $targetRatio;
+                $srcX = 0;
+                $srcY = ($originalHeight - $newHeight) / 2;
+            }
+
+            // Create new cropped image
+            $croppedImage = imagecreatetruecolor($newWidth, $newHeight);
+            
+            // Preserve transparency for PNG
+            if ($extension === 'png') {
+                imagealphablending($croppedImage, false);
+                imagesavealpha($croppedImage, true);
+            }
+            
+            imagecopyresampled(
+                $croppedImage, $image,
+                0, 0, $srcX, $srcY,
+                $newWidth, $newHeight, $newWidth, $newHeight
+            );
+
+            // Save to temporary file
+            $tempPath = sys_get_temp_dir() . '/' . Str::random(40) . '.jpg';
+            imagejpeg($croppedImage, $tempPath, 90);
+
+            // Clean up
+            imagedestroy($image);
+            imagedestroy($croppedImage);
+
+            // Store the cropped image
+            $filename = 'cars/' . Str::random(40) . '.jpg';
+            $stored = Storage::disk('public')->put($filename, file_get_contents($tempPath));
+            unlink($tempPath);
+
+            if (!$stored) {
+                throw new \Exception('Failed to store image');
+            }
+
+            return $filename;
+        } catch (\Exception $e) {
+            Log::error('Image crop failed: ' . $e->getMessage());
+            // Fallback to direct upload without crop
+            return $uploadedFile->store('cars', 'public');
+        }
     }
 
     public function store(Request $request)
@@ -47,15 +136,15 @@ class CarController extends Controller
         ]);
 
         if ($request->hasFile('main_image')) {
-            $validated['main_image'] = $request->file('main_image')->store('cars', 'public');
+            $validated['main_image'] = $this->cropImageTo4x3($request->file('main_image'));
         }
 
         $car = Car::create($validated);
 
-        // Handle multiple images upload
+        // Handle multiple images upload with crop
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('cars', 'public');
+                $path = $this->cropImageTo4x3($image);
                 CarImage::create([
                     'car_id' => $car->id,
                     'image_path' => $path,
@@ -76,6 +165,8 @@ class CarController extends Controller
 
     public function update(Request $request, Car $car)
     {
+        Log::info('Update car started', ['car_id' => $car->id]);
+        
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'brand' => 'required|string|max:255',
@@ -97,26 +188,31 @@ class CarController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
+        Log::info('Validation passed', $validated);
+
         if ($request->hasFile('main_image')) {
             if ($car->main_image) {
                 Storage::disk('public')->delete($car->main_image);
             }
-            $validated['main_image'] = $request->file('main_image')->store('cars', 'public');
+            $validated['main_image'] = $this->cropImageTo4x3($request->file('main_image'));
+            Log::info('Main image updated');
         }
 
         $car->update($validated);
+        Log::info('Car updated successfully');
 
-        // Handle multiple images upload
+        // Handle multiple images upload with crop
         if ($request->hasFile('images')) {
             $currentMaxOrder = $car->images()->max('order') ?? 0;
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('cars', 'public');
+                $path = $this->cropImageTo4x3($image);
                 CarImage::create([
                     'car_id' => $car->id,
                     'image_path' => $path,
                     'order' => $currentMaxOrder + $index + 1,
                 ]);
             }
+            Log::info('Additional images uploaded');
         }
 
         return redirect()->route('admin.cars.index')
