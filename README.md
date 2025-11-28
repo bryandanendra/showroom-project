@@ -1,288 +1,102 @@
-# 🚗 SMM AUTO GALLERY - Pure PHP Laravel
+# 🚗 SMM AUTO GALLERY
 
-Showroom Mobil Bekas Berkualitas - **100% Pure PHP Laravel** (No Node.js Required!)
+A premium used car showroom management system built with **Laravel 11**.
+This project is designed to be **lightweight** and **easy to install**, using **Pure CSS & JavaScript** (No Node.js/NPM dependencies required).
 
-## ✨ Highlights
+## ✨ Features
 
-- ✅ **Pure PHP Laravel** - Tidak perlu Node.js, npm, atau Vite
-- ✅ **Vanilla CSS & JavaScript** - Tidak ada framework dependencies
-- ✅ **Portable** - Copy folder dan langsung jalan (setelah composer install)
-- ✅ **Lightweight** - Hemat ~450MB tanpa node_modules
-- ✅ **Fast Setup** - Tidak perlu `npm install` atau `npm run build`
+- **Pure PHP/Laravel**: No complex frontend build steps.
+- **Zero-Config Database**: Pre-configured with SQLite for instant setup.
+- **Responsive Design**: Custom CSS for a premium look on all devices.
+- **Role-Based Access**: Admin and User dashboards.
+- **Car Management**: Complete CRUD for vehicle inventory.
+- **Test Drive & Orders**: Booking system with status tracking.
 
-## � Quick Start
+## 🚀 Installation Guide
 
-### 1. Clone & Setup
+Follow these simple steps to get the project running in minutes.
 
-```bash
-# Clone repository
-git clone <repository-url>
-cd showroom-project
+### Prerequisites
+- PHP >= 8.2
+- Composer
 
-# Install PHP dependencies
-composer install
+### Step-by-Step Setup
 
-# Setup environment
-cp .env.example .env
-php artisan key:generate
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd showroom-project
+   ```
 
-# Setup database
-php artisan migrate --seed
+2. **Install PHP Dependencies**
+   ```bash
+   composer install
+   ```
 
-# Create storage link
-php artisan storage:link
+3. **Setup Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-# Run server
-php artisan serve
-```
+4. **Setup Database**
+   The project uses SQLite by default. Run migrations and seed the database:
+   ```bash
+   # Create database file (if not exists)
+   touch database/database.sqlite
 
-Buka browser: `http://localhost:8000`
+   # Run migrations and seeders
+   php artisan migrate --seed
+   ```
 
-**TIDAK PERLU `npm install`!** 🎉
+5. **Link Storage**
+   ```bash
+   php artisan storage:link
+   ```
 
-### 2. Pindah Laptop Lain
+6. **Run the Server**
+   ```bash
+   php artisan serve
+   ```
 
-```bash
-# Copy folder project
-# Jalankan:
-composer install
-php artisan serve
-```
+   Visit **http://localhost:8000** in your browser.
 
-Selesai! Tidak perlu install Node.js atau npm!
+---
 
-## 📁 Struktur Project
+## 👤 Default Login Credentials
 
-```
-showroom-project/
-├── app/                    # Laravel application
-├── public/
-│   ├── css/
-│   │   └── style.css      # Pure CSS (No TailwindCSS)
-│   └── js/
-│       └── app.js          # Vanilla JS (No Alpine.js)
-├── resources/
-│   └── views/              # Blade templates
-├── routes/                 # Laravel routes
-├── database/               # Migrations & seeders
-└── ...
-```
+### Admin Account
+- **Email:** `admin@showroom.com`
+- **Password:** `password`
 
-## 🎯 Fitur Utama
+### User Account
+- **Email:** `user@showroom.com`
+- **Password:** `password`
 
-### Untuk Pengunjung
-- 🏠 Homepage dengan featured cars
-- 🔍 Katalog mobil dengan filter & sorting
-- 🚗 Detail mobil lengkap dengan galeri
-- 📅 Booking test drive
-- 💰 Request pemesanan
-- 📱 Responsive design (mobile-friendly)
-
-### Untuk Admin
-- 📊 Dashboard dengan statistik
-- 🚗 Kelola mobil (CRUD)
-- 📅 Kelola test drive requests
-- 💼 Kelola pemesanan
-- 🔔 Notifikasi real-time
-
-### Untuk User
-- 👤 Dashboard pribadi
-- 📋 Riwayat test drive
-- 💳 Riwayat pemesanan
-- 🔔 Notifikasi status
+---
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Laravel 11.x
-- **Database:** MySQL
-- **Frontend:** Pure HTML, CSS, JavaScript
-- **Authentication:** Laravel Breeze (modified)
-- **Storage:** Laravel File Storage
+- **Framework:** Laravel 11
+- **Language:** PHP 8.2+
+- **Database:** SQLite (Default) / MySQL (Supported)
+- **Frontend:** Blade Templates, Vanilla CSS, Vanilla JS
+- **Auth:** Laravel Breeze (Customized)
 
-## � Default Accounts
+## 📁 Project Structure
 
-### Admin
-- Email: `admin@showroom.com`
-- Password: `password`
-
-### User
-- Email: `user@showroom.com`
-- Password: `password`
-
-## 🎨 Customization
-
-### Mengubah Warna Theme
-
-Edit `public/css/style.css`:
-
-```css
-/* Cari dan ubah warna primary (red) */
-.bg-red-600 { background-color: #dc2626; } /* Ubah ke warna lain */
-.text-red-600 { color: #dc2626; }
-.btn-primary { background-color: #dc2626; }
+```
+showroom-project/
+├── app/                 # Core Logic
+├── database/            # Migrations & Seeds
+├── public/
+│   ├── css/style.css   # Main Stylesheet (No Tailwind Build)
+│   └── js/app.js       # Main JavaScript (No Bundler)
+├── resources/
+│   └── views/          # Blade Templates
+└── routes/             # Web Routes
 ```
 
-### Menambah JavaScript Functionality
-
-Edit `public/js/app.js`:
-
-```javascript
-// Tambahkan function baru
-function myNewFeature() {
-    // Your code
-}
-
-// Daftarkan di ready()
-ready(function() {
-    // ... existing code
-    myNewFeature();
-});
-```
-
-## � Deployment
-
-### Shared Hosting
-
-1. Upload semua file via FTP/SFTP
-2. Point document root ke folder `public`
-3. Jalankan di terminal:
-
-```bash
-composer install --optimize-autoloader --no-dev
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-### VPS/Dedicated Server
-
-```bash
-# Clone repository
-git clone <repository-url>
-cd showroom-project
-
-# Install dependencies
-composer install --optimize-autoloader --no-dev
-
-# Setup environment
-cp .env.example .env
-php artisan key:generate
-
-# Setup database
-php artisan migrate --seed
-
-# Setup permissions
-chmod -R 775 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
-
-# Create storage link
-php artisan storage:link
-
-# Cache config
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-Setup Nginx/Apache untuk point ke folder `public`.
-
-## � Development
-
-### Menjalankan Server
-
-```bash
-php artisan serve
-```
-
-### Clear Cache
-
-```bash
-php artisan cache:clear
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-```
-
-### Database
-
-```bash
-# Run migrations
-php artisan migrate
-
-# Run seeders
-php artisan db:seed
-
-# Fresh migration with seed
-php artisan migrate:fresh --seed
-```
-
-## 📚 Documentation
-
-- [Migration Guide](MIGRATION_TO_PURE_PHP.md) - Penjelasan migrasi dari Vite+TailwindCSS+Alpine.js
-- [Implementation Guide](IMPLEMENTATION_GUIDE.md) - Panduan implementasi fitur
-- [Routes Documentation](ROUTES.md) - Daftar semua routes
-
-## 🐛 Troubleshooting
-
-### CSS tidak muncul
-```bash
-php artisan cache:clear
-php artisan view:clear
-# Pastikan file ada di public/css/style.css
-```
-
-### JavaScript tidak berfungsi
-```bash
-# Cek console browser (F12)
-# Pastikan file ada di public/js/app.js
-```
-
-### Storage link error
-```bash
-php artisan storage:link
-# Atau manual: ln -s ../storage/app/public public/storage
-```
-
-## 🤝 Contributing
-
-1. Fork repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## 📄 License
+## 📝 License
 
 This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## 👨‍💻 Developer
-
-Developed with ❤️ using Pure PHP Laravel
-
----
-
-## 🎉 Keunggulan Pure PHP Laravel
-
-### Sebelum (dengan Node.js)
-```
-📦 Size: ~500MB (dengan node_modules)
-⚙️ Setup: composer install + npm install + npm run build
-🚀 Deploy: Upload + npm install + npm run build
-⏱️ Time: ~5-10 menit
-```
-
-### Sesudah (Pure PHP)
-```
-� Size: ~50MB (tanpa node_modules)
-⚙️ Setup: composer install
-🚀 Deploy: Upload + composer install
-⏱️ Time: ~1-2 menit
-```
-
-**Hemat 90% ukuran dan 80% waktu!** 🚀
-
----
-
-**Last Updated:** 26 November 2025
-**Version:** 2.0.0 (Pure PHP)
-**Status:** ✅ Production Ready
