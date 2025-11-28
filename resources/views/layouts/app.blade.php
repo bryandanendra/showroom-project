@@ -17,8 +17,8 @@
                 <!-- Logo -->
                 <div class="navbar-logo">
                     <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                        <div class="navbar-logo-icon">
-                            <span class="text-white font-bold text-xl">SMM</span>
+                        <div class="navbar-logo-icon" style="background: none;">
+                            <img src="{{ asset('logo-transparent.png') }}" alt="SMM" class="w-full h-full object-contain">
                         </div>
                         <div class="navbar-logo-text">
                             <span class="text-lg font-bold tracking-wide">SMM AUTO GALLERY</span>

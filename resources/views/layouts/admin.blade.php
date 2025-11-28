@@ -45,8 +45,8 @@
         <aside class="admin-sidebar" data-admin-sidebar>
             <div class="admin-sidebar-header">
                 <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-sm">SMM</span>
+                    <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                        <img src="{{ asset('logo-transparent.png') }}" alt="SMM" class="w-full h-full object-contain">
                     </div>
                     <span class="font-bold text-sm">Admin Panel</span>
                 </div>
