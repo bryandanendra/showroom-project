@@ -55,10 +55,10 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('admin.cars.edit', $car) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                            <form action="{{ route('admin.cars.destroy', $car) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus mobil ini?')">
+                            <form action="{{ route('admin.cars.destroy', $car) }}" method="POST" class="inline" id="delete-form-{{ $car->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                <button type="button" class="text-red-600 hover:text-red-900" onclick="confirmDelete({{ $car->id }}, '{{ $car->brand }} {{ $car->model }}')">Hapus</button>
                             </form>
                         </td>
                     </tr>
@@ -72,4 +72,24 @@
         {{ $cars->links() }}
     </div>
 </div>
+
+<script>
+function confirmDelete(carId, carName) {
+    Swal.fire({
+        title: 'Hapus Mobil?',
+        text: `Apakah Anda yakin ingin menghapus ${carName}? Tindakan ini tidak dapat dibatalkan.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('delete-form-' + carId).submit();
+        }
+    });
+}
+</script>
 @endsection

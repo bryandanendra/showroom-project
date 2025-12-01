@@ -1,4 +1,5 @@
 <x-guest-layout>
+    @section('title', 'Login - SMM AUTO GALLERY')
     <h2 class="auth-card-title">Selamat Datang Kembali</h2>
     <p class="auth-card-subtitle">Masuk ke akun Anda untuk melanjutkan</p>
 

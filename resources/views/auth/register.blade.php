@@ -1,4 +1,5 @@
 <x-guest-layout>
+    @section('title', 'Daftar Akun - SMM AUTO GALLERY')
     <h2 class="auth-card-title">Buat Akun Baru</h2>
     <p class="auth-card-subtitle">Daftar untuk mulai mencari mobil impian Anda</p>
 

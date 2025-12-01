@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SMM AUTO GALLERY - Showroom Mobil Bekas Berkualitas')</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('logo-transparent.png') }}">
+    
     <!-- Pure CSS - No Node.js Dependencies -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>

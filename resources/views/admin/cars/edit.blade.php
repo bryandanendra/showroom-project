@@ -106,7 +106,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
                     @if($car->main_image)
                         <div class="mb-3">
-                            <div class="relative w-48 group cursor-pointer overflow-hidden rounded-lg shadow-sm" onclick="if(confirm('Hapus gambar utama?')) deleteCarImage('{{ route('admin.cars.delete-main-image', $car) }}')">
+                            <div class="relative w-48 group cursor-pointer overflow-hidden rounded-lg shadow-sm" onclick="confirmDeleteMainImage('{{ route('admin.cars.delete-main-image', $car) }}')">
                                 <img src="{{ asset('storage/' . $car->main_image) }}" class="w-full h-32 object-cover transition duration-300 group-hover:scale-105">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
                                     <div class="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center">
@@ -131,7 +131,7 @@
                     @if($car->images->count() > 0)
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                             @foreach($car->images as $image)
-                                <div class="relative group cursor-pointer overflow-hidden rounded-lg shadow-sm" onclick="if(confirm('Hapus gambar ini?')) deleteCarImage('{{ route('admin.cars.delete-image', $image->id) }}')">
+                                <div class="relative group cursor-pointer overflow-hidden rounded-lg shadow-sm" onclick="confirmDeleteImage('{{ route('admin.cars.delete-image', $image->id) }}')">
                                     <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-32 object-cover transition duration-300 group-hover:scale-105">
                                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
                                         <div class="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center">
@@ -177,8 +177,43 @@
 </div>
 
 <script>
+    function confirmDeleteMainImage(url) {
+        Swal.fire({
+            title: 'Hapus Gambar Utama?',
+            text: 'Gambar utama mobil akan dihapus. Anda dapat mengupload gambar baru nanti.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteCarImage(url);
+            }
+        });
+    }
+
+    function confirmDeleteImage(url) {
+        Swal.fire({
+            title: 'Hapus Gambar?',
+            text: 'Gambar ini akan dihapus dari galeri mobil.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteCarImage(url);
+            }
+        });
+    }
+
     function deleteCarImage(url) {
-        // Konfirmasi sudah dilakukan di inline onclick, jadi di sini langsung submit
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = url;

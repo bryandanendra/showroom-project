@@ -6,8 +6,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel') - Showroom</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('logo-transparent.png') }}">
+    
     <!-- Pure CSS - No Node.js Dependencies -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- Prevent sidebar flash on page load -->
     <script>
@@ -178,18 +184,6 @@
 
             <!-- Main Content -->
             <main class="admin-content">
-                @if(session('success'))
-                    <div class="alert alert-success" data-alert>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="alert alert-error" data-alert>
-                        <span>{{ session('error') }}</span>
-                    </div>
-                @endif
-
                 @yield('content')
             </main>
         </div>
@@ -197,5 +191,31 @@
     
     <!-- Pure JavaScript - No Node.js Dependencies -->
     <script src="{{ asset('js/app.js') }}"></script>
+
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'OK',
+            timer: 3000,
+            timerProgressBar: true
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    @endif
 </body>
 </html>
